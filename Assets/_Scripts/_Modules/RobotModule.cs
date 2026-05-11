@@ -21,7 +21,7 @@ public abstract class RobotModule : MonoBehaviour, IConnectable
         rb.mass = moduleMass;
     }
 
-    // Các class con có thể ghi đè (override) logic kết nối này nếu cần
+    // Các class con có thể ghi đè (override) logic kết nối này
     public virtual void Connect(Transform parentSocket)
     {
         // 1. Vô hiệu hóa vật lý tạm thời để snap vị trí
@@ -39,11 +39,13 @@ public abstract class RobotModule : MonoBehaviour, IConnectable
         Debug.Log($"{moduleName} đã kết nối thành công!");
     }
 
+    // Các class con có thể ghi đè (override) logic tháo rời này
     public virtual void Disconnect()
     {
+        // Phá hủy khớp nối vật lý
         if (connectionJoint != null)
         {
-            Destroy(connectionJoint); // Phá hủy khớp nối vật lý
+            Destroy(connectionJoint); 
         }
         Debug.Log($"{moduleName} đã tháo rời.");
     }

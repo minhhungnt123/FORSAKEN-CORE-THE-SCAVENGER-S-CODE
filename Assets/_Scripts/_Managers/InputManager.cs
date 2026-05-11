@@ -9,12 +9,13 @@ public class InputManager : MonoBehaviour
     public InputActionReference LookAction;
     public InputActionReference LockOnAction;
     public InputActionReference SprintAction;
-
+    public InputActionReference InteractAction;
     public Vector2 MoveInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool IsLockOn { get; private set; }
     public bool IsSprinting { get; private set; }
+    public bool InteractTriggered { get; private set; }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void OnEnable()
     {
@@ -23,6 +24,7 @@ public class InputManager : MonoBehaviour
         if(LookAction != null) LookAction.action.Enable();
         if(LockOnAction != null) LockOnAction.action.Enable();
         if(SprintAction != null) SprintAction.action.Enable();
+        if(InteractAction != null) InteractAction.action.Enable();
     }
 
     private void OnDisable()
@@ -41,6 +43,9 @@ public class InputManager : MonoBehaviour
         }
         if (SprintAction != null) {
             SprintAction.action.Disable();
+        }
+        if (InteractAction != null) {
+            InteractAction.action.Disable();
         }
     }
 
@@ -61,6 +66,9 @@ public class InputManager : MonoBehaviour
         }
         if (SprintAction != null) { 
             IsSprinting = SprintAction.action.IsPressed();
+        }
+        if (InteractAction != null) { 
+            InteractTriggered = InteractAction.action.WasPressedThisFrame();
         }
     }
 }
