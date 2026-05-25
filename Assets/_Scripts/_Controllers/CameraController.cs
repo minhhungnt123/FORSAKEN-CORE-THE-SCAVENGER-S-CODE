@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -16,17 +17,16 @@ public class CameraController : MonoBehaviour
             SetCursorState(true);
         }
     }
-    // Cập nhật mỗi frame để kiểm tra input thay đổi trạng thái chuột
     private void Update()
     {
         // Ví dụ: Bấm phím ESC để Mở/Khóa chuột tạm thời
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ToggleCursorState();
         }
 
         // Bấm chuột trái để khóa lại (chuẩn thao tác game bắn súng)
-        if (Input.GetMouseButtonDown(0) && !isCursorLocked)
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !isCursorLocked)
         {
             SetCursorState(true);
         }

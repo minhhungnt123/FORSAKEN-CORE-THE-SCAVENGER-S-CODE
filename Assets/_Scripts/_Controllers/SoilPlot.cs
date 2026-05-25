@@ -1,4 +1,5 @@
 using UnityEngine;
+using RoboticsProject.Interfaces;
 
 // Định nghĩa Interface cho các trạng thái của ô đất
 public interface ISoilState
@@ -40,7 +41,7 @@ public class SoilPlot : MonoBehaviour, IInteractable
         return currentState.GetPrompt();
     }
 
-    public void Interact()
+    public void OnInteract()
     {
         currentState.Interact(this);
     }
