@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using RoboticsProject.Managers;
 
 public class CameraController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class CameraController : MonoBehaviour
 
     // Biến lưu trữ trạng thái hiện tại của chuột
     private bool isCursorLocked;
+
     // Khởi tạo trạng thái chuột khi bắt đầu
     private void Start()
     {
@@ -16,7 +18,26 @@ public class CameraController : MonoBehaviour
         {
             SetCursorState(true);
         }
+
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.OnInventoryToggle += HandleInventoryToggle;
+        }
     }
+
+    private void OnDestroy()
+    {
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.OnInventoryToggle -= HandleInventoryToggle;
+        }
+    }
+
+    private void HandleInventoryToggle(bool isOpen)
+    {
+        SetCursorState(!isOpen);
+    }
+
     private void Update()
     {
         // Ví dụ: Bấm phím ESC để Mở/Khóa chuột tạm thời
@@ -28,7 +49,11 @@ public class CameraController : MonoBehaviour
         // Bấm chuột trái để khóa lại (chuẩn thao tác game bắn súng)
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !isCursorLocked)
         {
-            SetCursorState(true);
+            // Chỉ khóa lại khi túi đồ không mở
+            if (InventoryManager.Instance == null || !InventoryManager.Instance.IsOpen)
+            {
+                SetCursorState(true);
+            }
         }
     }
 

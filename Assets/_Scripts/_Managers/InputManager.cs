@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    public static InputManager Instance { get; private set; }
+
     [Header("Input Actions")]
     public InputActionReference MoveAction;
     public InputActionReference JumpAction;
@@ -10,12 +12,26 @@ public class InputManager : MonoBehaviour
     public InputActionReference LockOnAction;
     public InputActionReference SprintAction;
     public InputActionReference InteractAction;
+    public InputActionReference InventoryAction;
+
     public Vector2 MoveInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool IsLockOn { get; private set; }
     public bool IsSprinting { get; private set; }
     public bool InteractTriggered { get; private set; }
+    public bool InventoryTriggered { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void OnEnable()
     {
@@ -25,6 +41,7 @@ public class InputManager : MonoBehaviour
         if(LockOnAction != null) LockOnAction.action.Enable();
         if(SprintAction != null) SprintAction.action.Enable();
         if(InteractAction != null) InteractAction.action.Enable();
+        if(InventoryAction != null) InventoryAction.action.Enable();
     }
 
     private void OnDisable()
@@ -46,6 +63,9 @@ public class InputManager : MonoBehaviour
         }
         if (InteractAction != null) {
             InteractAction.action.Disable();
+        }
+        if (InventoryAction != null) {
+            InventoryAction.action.Disable();
         }
     }
 
@@ -70,5 +90,52 @@ public class InputManager : MonoBehaviour
         if (InteractAction != null) { 
             InteractTriggered = InteractAction.action.WasPressedThisFrame();
         }
+        if (InventoryAction != null) {
+            InventoryTriggered = InventoryAction.action.WasPressedThisFrame();
+        }
+    }
+
+    /// <summary>
+    /// Bật/tắt trạng thái hiển thị và khóa của chuột.
+    /// </summary>
+    public void SetCursorState(bool isLocked)
+    {
+        Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !isLocked;
+    }
+
+    /// <summary>
+    /// Lấy chuỗi mô tả phím bấm tương tác động và rút gọn tối đa (ví dụ: "E").
+    /// </summary>
+    public string GetInteractBindingName()
+    {
+        if (InteractAction != null && InteractAction.action != null)
+        {
+            // Lấy chuỗi hiển thị phím từ Input System (ví dụ: "E")
+            string bindingString = InteractAction.action.GetBindingDisplayString();
+            if (string.IsNullOrEmpty(bindingString)) return "E";
+
+            // 1. Tách các binding song song (ngăn cách bởi dấu '|') và chọn cái đầu tiên (thường là Keyboard)
+            string firstBinding = bindingString;
+            if (bindingString.Contains("|"))
+            {
+                string[] bindings = bindingString.Split('|');
+                if (bindings.Length > 0)
+                {
+                    firstBinding = bindings[0];
+                }
+            }
+
+            // 2. Loại bỏ các từ khóa hành vi của Input System như "Hold", "Press", "Tap" (không phân biệt hoa thường)
+            string cleaned = System.Text.RegularExpressions.Regex.Replace(firstBinding, @"(?i)\b(hold|press|tap)\b\s*", "");
+
+            // 3. Loại bỏ thông tin thiết bị trong ngoặc nếu có (VD: "E (Keyboard)" -> "E")
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s*[\(\[][^\]\)]*[\)\]]\s*", "");
+
+            // 4. Viết hoa và xóa khoảng trắng thừa
+            return cleaned.ToUpper().Trim();
+        }
+        return "E"; // Fallback mặc định
     }
 }
+
