@@ -1,11 +1,17 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Thêm thư viện này
+using UnityEngine.InputSystem;
 
 public class AssemblyManager : MonoBehaviour
 {
-    [Header("Cài đặt Lắp ráp")]
+    [Header("Cai dat Lap rap")]
     public float snapDistance = 1.5f;
     public float dragSpeed = 15f;
+
+    [Header("Tham chieu den Robot Root")]
+    public ChassisModule chassis;
+
+    // Public de CameraController kiem tra
+    public bool IsDragging => selectedModule != null;
 
     private Camera mainCamera;
     private RobotModule selectedModule;
@@ -14,13 +20,12 @@ public class AssemblyManager : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        if (chassis == null)
+            Debug.LogError("[AssemblyManager] Chua gan ChassisModule!");
     }
 
     void Update()
     {
-        // Kiểm tra xem có chuột không để tránh lỗi Null
-        if (Mouse.current == null) return;
-
         HandleSelection();
         HandleDragging();
         HandleRelease();
@@ -28,90 +33,58 @@ public class AssemblyManager : MonoBehaviour
 
     private void HandleSelection()
     {
-        // Thay thế Input.GetMouseButtonDown(0)
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            // Thay thế Input.mousePosition
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-            Ray ray = mainCamera.ScreenPointToRay(mousePos);
+        // Chi cho phep chon module khi chuot dang mo khoa (visible)
+        if (!Mouse.current.leftButton.wasPressedThisFrame) return;
+        if (Cursor.lockState == CursorLockMode.Locked) return;
 
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                RobotModule module = hit.collider.GetComponent<RobotModule>();
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (!Physics.Raycast(ray, out RaycastHit hit)) return;
 
-                if (module != null)
-                {
-                    selectedModule = module;
-                    selectedModule.Disconnect();
+        RobotModule module = hit.collider.GetComponentInParent<RobotModule>();
+        if (module == null || module is ChassisModule) return;
 
-                    zDistanceToCamera = mainCamera.WorldToScreenPoint(selectedModule.transform.position).z;
+        selectedModule = module;
+        selectedModule.Disconnect();
+        zDistanceToCamera = mainCamera.WorldToScreenPoint(selectedModule.transform.position).z;
+        selectedModule.GetComponent<Rigidbody>().isKinematic = true;
 
-                    Rigidbody rb = selectedModule.GetComponent<Rigidbody>();
-                    if (rb != null) rb.isKinematic = true;
-                }
-            }
-        }
+        Debug.Log($"[Assembly] Dang keo: {selectedModule.moduleName}");
     }
 
     private void HandleDragging()
     {
-        // Thay thế Input.GetMouseButton(0)
-        if (Mouse.current.leftButton.isPressed && selectedModule != null)
-        {
-            // Lấy vị trí chuột hiện tại
-            Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
-            mouseScreenPos.z = zDistanceToCamera;
-            Vector3 targetPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
+        if (selectedModule == null || !Mouse.current.leftButton.isPressed) return;
 
-            selectedModule.transform.position = Vector3.Lerp(selectedModule.transform.position, targetPos, Time.deltaTime * dragSpeed);
-        }
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        mouseScreenPos.z = zDistanceToCamera;
+        Vector3 targetPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
+
+        selectedModule.transform.position = Vector3.Lerp(
+            selectedModule.transform.position,
+            targetPos,
+            Time.deltaTime * dragSpeed
+        );
     }
 
     private void HandleRelease()
     {
-        // Thay thế Input.GetMouseButtonUp(0)
-        if (Mouse.current.leftButton.wasReleasedThisFrame && selectedModule != null)
+        if (selectedModule == null || !Mouse.current.leftButton.wasReleasedThisFrame) return;
+
+        float distToChassis = Vector3.Distance(
+            selectedModule.transform.position,
+            chassis.transform.position
+        );
+
+        bool snapped = false;
+        if (distToChassis <= snapDistance * 3f)
+            snapped = chassis.TryEquip(selectedModule);
+
+        if (!snapped)
         {
-            Transform closestSocket = FindClosestSocket(selectedModule.transform.position);
-
-            if (closestSocket != null)
-            {
-                selectedModule.Connect(closestSocket);
-            }
-            else
-            {
-                Rigidbody rb = selectedModule.GetComponent<Rigidbody>();
-                if (rb != null) rb.isKinematic = false;
-            }
-
-            selectedModule = null;
-        }
-    }
-
-    private Transform FindClosestSocket(Vector3 currentPosition)
-    {
-        Transform bestSocket = null;
-        float minDistance = snapDistance;
-
-        RobotModule[] allModules = FindObjectsByType<RobotModule>(FindObjectsSortMode.None);
-
-        foreach (var module in allModules)
-        {
-            if (module == selectedModule) continue;
-
-            foreach (var socket in module.availableSockets)
-            {
-                if (socket == null) continue;
-
-                float dist = Vector3.Distance(currentPosition, socket.position);
-                if (dist < minDistance)
-                {
-                    minDistance = dist;
-                    bestSocket = socket;
-                }
-            }
+            selectedModule.GetComponent<Rigidbody>().isKinematic = false;
+            Debug.Log($"[Assembly] {selectedModule.moduleName} khong snap duoc.");
         }
 
-        return bestSocket;
+        selectedModule = null;
     }
 }

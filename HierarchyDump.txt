@@ -1,0 +1,58 @@
+--- Hierarchy for fighting_leg_1 ---
+- fighting_leg_1
+  - Armature.004
+    - Bone.002
+      - Bone.002_L
+        - Bone.002_L.001
+          - Bone.002_L.002
+            - Bone.002_L.003
+              - Bone.002_L.004
+                - Bone.002_L.004_end
+      - Bone.002_R
+        - Bone.002_R.001
+          - Bone.002_R.002
+            - Bone.002_R.003
+              - Bone.002_R.004
+                - Bone.002_R.004_end
+  - Leg
+
+--- Hierarchy for fighting_arm_left_1 ---
+- fighting_arm_left_1
+  - Armature.001
+    - Bone.001_L.001
+      - Bone.001_L.002
+        - Bone.001_L.003
+          - Bone.001_L.004
+            - Bone.001_L.004_end
+              - Bone.001_L.004_end_end
+  - L_Shoulder.001
+
+--- Hierarchy for fighting_leg_1 ---
+- fighting_leg_1
+  - Armature.004
+    - Bone.002
+      - Bone.002_L
+        - Bone.002_L.001
+          - Bone.002_L.002
+            - Bone.002_L.003
+              - Bone.002_L.004
+                - Bone.002_L.004_end
+      - Bone.002_R
+        - Bone.002_R.001
+          - Bone.002_R.002
+            - Bone.002_R.003
+              - Bone.002_R.004
+                - Bone.002_R.004_end
+  - Leg
+
+--- Hierarchy for fighting_arm_left_1 ---
+- fighting_arm_left_1
+  - Armature.001
+    - Bone.001_L.001
+      - Bone.001_L.002
+        - Bone.001_L.003
+          - Bone.001_L.004
+            - Bone.001_L.004_end
+              - Bone.001_L.004_end_end
+  - L_Shoulder.001
+

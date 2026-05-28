@@ -3,39 +3,34 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [Header("Cursor Settings")]
-    [Tooltip("Tự động khóa chuột khi bắt đầu game")]
     [SerializeField] private bool lockCursorOnStart = true;
 
-    // Biến lưu trữ trạng thái hiện tại của chuột
     private bool isCursorLocked;
-    // Khởi tạo trạng thái chuột khi bắt đầu
+
     private void Start()
     {
         if (lockCursorOnStart)
-        {
             SetCursorState(true);
-        }
     }
-    // Cập nhật mỗi frame để kiểm tra input thay đổi trạng thái chuột
+
     private void Update()
     {
-        // Ví dụ: Bấm phím ESC để Mở/Khóa chuột tạm thời
+        // ESC: mo khoa chuot de keo module
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
             ToggleCursorState();
-        }
 
-        // Bấm chuột trái để khóa lại (chuẩn thao tác game bắn súng)
+        // Click chuot trai chi khoa lai khi KHONG co module nao dang duoc keo
         if (Input.GetMouseButtonDown(0) && !isCursorLocked)
         {
-            SetCursorState(true);
+            // Kiem tra AssemblyManager co dang keo module khong
+            var asm = FindFirstObjectByType<AssemblyManager>();
+            bool isDragging = asm != null && asm.IsDragging;
+
+            if (!isDragging)
+                SetCursorState(true);
         }
     }
 
-    /// <summary>
-    /// Hàm điều khiển trạng thái chuột
-    /// </summary>
-    /// <param name="isLocked">true: Ẩn và khóa, false: Hiện và mở khóa</param>
     public void SetCursorState(bool isLocked)
     {
         isCursorLocked = isLocked;
@@ -43,9 +38,6 @@ public class CameraController : MonoBehaviour
         Cursor.visible = !isLocked;
     }
 
-    /// <summary>
-    /// Đảo ngược trạng thái chuột hiện tại
-    /// </summary>
     private void ToggleCursorState()
     {
         SetCursorState(!isCursorLocked);

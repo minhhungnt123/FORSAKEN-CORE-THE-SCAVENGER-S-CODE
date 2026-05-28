@@ -10,12 +10,15 @@ public class InputManager : MonoBehaviour
     public InputActionReference LockOnAction;
     public InputActionReference SprintAction;
     public InputActionReference InteractAction;
+    public InputActionReference FireAction;
     public Vector2 MoveInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool IsLockOn { get; private set; }
     public bool IsSprinting { get; private set; }
     public bool InteractTriggered { get; private set; }
+    public bool FireTriggered { get; private set; }   // True trong frame bấm chuột phải
+    public bool IsHoldingFire { get; private set; }  // True khi giữ chuột phải
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void OnEnable()
     {
@@ -25,6 +28,7 @@ public class InputManager : MonoBehaviour
         if(LockOnAction != null) LockOnAction.action.Enable();
         if(SprintAction != null) SprintAction.action.Enable();
         if(InteractAction != null) InteractAction.action.Enable();
+        if(FireAction != null) FireAction.action.Enable();
     }
 
     private void OnDisable()
@@ -46,6 +50,9 @@ public class InputManager : MonoBehaviour
         }
         if (InteractAction != null) {
             InteractAction.action.Disable();
+        }
+        if (FireAction != null) {
+            FireAction.action.Disable();
         }
     }
 
@@ -69,6 +76,18 @@ public class InputManager : MonoBehaviour
         }
         if (InteractAction != null) { 
             InteractTriggered = InteractAction.action.WasPressedThisFrame();
+        }
+        // Chuột phải: bắn súng
+        if (FireAction != null)
+        {
+            FireTriggered    = FireAction.action.WasPressedThisFrame();
+            IsHoldingFire    = FireAction.action.IsPressed();
+        }
+        else
+        {
+            // Fallback: Chuột phải (1) để nhắm, Chuột trái (0) để bắn
+            FireTriggered    = Input.GetMouseButtonDown(0);
+            IsHoldingFire    = Input.GetMouseButton(1);
         }
     }
 }
