@@ -75,6 +75,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateGroundStatus()
     {
+        // Nếu đang nhảy lên (vận tốc Y dương), tuyệt đối không thể chạm đất
+        if (velocity.y > 0)
+        {
+            isGrounded = false;
+            return;
+        }
+
         // Kết hợp cả CheckSphere của ta VÀ isGrounded nội tại của CharacterController
         // Điều này đảm bảo độ chính xác tuyệt đối khi đứng trên các vật thể phức tạp hoặc bậc thang
         bool sphereCastGround = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);

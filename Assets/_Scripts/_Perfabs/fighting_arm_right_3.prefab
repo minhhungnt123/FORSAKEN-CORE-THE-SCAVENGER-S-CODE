@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &99992309886950726
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.9665346
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.9999984
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.372833
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2241251529291136017, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      propertyPath: m_Name
+      value: fighting_arm_right_3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2643039576716564917}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3563284164895497848}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7605394842201916965}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8174176988815765473}
+  m_SourcePrefab: {fileID: 100100000, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+--- !u!1 &982444048777748503 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 40393dd7b9def25429497d09bc27db5a, type: 3}
+  m_PrefabInstance: {fileID: 99992309886950726}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &2643039576716564917
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982444048777748503}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &3563284164895497848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982444048777748503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3959b6b58c84cfe40b7223c73b5cb7f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArmRightModule
+  moduleMass: 5
+  moduleName: Unknown Module
+  moduleDescription: 
+  moduleIcon: {fileID: 0}
+  availableSockets: []
+  armAnimator: {fileID: 0}
+--- !u!64 &7605394842201916965
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982444048777748503}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
+--- !u!114 &8174176988815765473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982444048777748503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1f74dea72fcb04cae89014e138e55d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GunArmAnimator
+  IsAiming: 0
+  aimAxis: {x: 0, y: 0, z: 1}
+  upperArmAimAngle: 30
+  forearmAimAngle: 60
+  invertAim: 0
+  aimBlendSpeed: 8
+  recoilBoneIndex: 2
+  recoilAxis: {x: 1, y: 0, z: 0}
+  recoilAngle: 15
+  recoilDuration: 0.08
+  recoilRecoverDuration: 0.18
+  previewAimPose: 0

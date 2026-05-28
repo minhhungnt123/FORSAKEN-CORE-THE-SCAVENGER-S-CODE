@@ -2,9 +2,14 @@ using UnityEngine;
 
 public interface IConnectable
 {
-    // Hàm gọi khi module này hít vào một socket của module khác
     void Connect(Transform parentSocket);
-
-    // Hàm gọi khi người chơi tháo module ra
     void Disconnect();
+}
+
+// Module biet minh can socket nao de ChassisModule dinh tuyen dung slot
+public interface IAssemblable
+{
+    string RequiredSocketTag { get; }
+    // OnAssembled va OnDetached la virtual method trong RobotModule
+    // khong bat buoc qua interface de tranh loi ten method
 }
