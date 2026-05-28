@@ -49,3 +49,7 @@ ExportedObj/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
+
+# Ignore .agents folder
+.agents/
+*.agents.meta

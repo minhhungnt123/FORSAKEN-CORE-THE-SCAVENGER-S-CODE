@@ -1,9 +1,21 @@
 using UnityEngine;
 
-public interface IInteractable
+namespace RoboticsProject.Interfaces
 {
-    // Hàm này trả về một chuỗi mô tả hành động tương tác
-    string GetInteractPrompt();
-    // Hàm này được gọi khi người chơi thực hiện hành động tương tác
-    void Interact();
-}   
+    /// <summary>
+    /// Interface chuẩn hóa mọi đối tượng có thể tương tác trong game.
+    /// Áp dụng nguyên lý Dependency Inversion (SOLID).
+    /// </summary>
+    public interface IInteractable
+    {
+        /// <summary>
+        /// Trả về chuỗi thông báo khi người chơi nhìn vào đối tượng (VD: "Nhấn E để ngủ").
+        /// </summary>
+        string GetInteractPrompt();
+
+        /// <summary>
+        /// Hành động thực tế xảy ra khi người chơi bấm nút tương tác.
+        /// </summary>
+        void OnInteract();
+    }
+}

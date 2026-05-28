@@ -1,4 +1,5 @@
 using UnityEngine;
+using RoboticsProject.Interfaces;
 
 public class BoxItem : MonoBehaviour, IInteractable
 {
@@ -9,7 +10,7 @@ public class BoxItem : MonoBehaviour, IInteractable
     }
 
     // Logic xử lý khi Player bấm E
-    public void Interact()
+    public void OnInteract()
     {
         Debug.Log($"Bạn đã nhặt chiếc hộp: {gameObject.name}");
 

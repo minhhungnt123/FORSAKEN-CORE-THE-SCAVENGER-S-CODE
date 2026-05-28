@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using RoboticsProject.Managers;
 
 public class CameraController : MonoBehaviour
 {
@@ -11,23 +13,42 @@ public class CameraController : MonoBehaviour
     {
         if (lockCursorOnStart)
             SetCursorState(true);
+        }
+
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.OnInventoryToggle += HandleInventoryToggle;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.OnInventoryToggle -= HandleInventoryToggle;
+        }
+    }
+
+    private void HandleInventoryToggle(bool isOpen)
+    {
+        SetCursorState(!isOpen);
     }
 
     private void Update()
     {
-        // ESC: mo khoa chuot de keo module
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Ví dụ: Bấm phím ESC để Mở/Khóa chuột tạm thời
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
             ToggleCursorState();
 
-        // Click chuot trai chi khoa lai khi KHONG co module nao dang duoc keo
-        if (Input.GetMouseButtonDown(0) && !isCursorLocked)
+        // Bấm chuột trái để khóa lại (chuẩn thao tác game bắn súng)
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !isCursorLocked)
         {
-            // Kiem tra AssemblyManager co dang keo module khong
-            var asm = FindFirstObjectByType<AssemblyManager>();
-            bool isDragging = asm != null && asm.IsDragging;
-
-            if (!isDragging)
+            // Chỉ khóa lại khi túi đồ không mở
+            if (InventoryManager.Instance == null || !InventoryManager.Instance.IsOpen)
+            {
                 SetCursorState(true);
+            }
         }
     }
 
