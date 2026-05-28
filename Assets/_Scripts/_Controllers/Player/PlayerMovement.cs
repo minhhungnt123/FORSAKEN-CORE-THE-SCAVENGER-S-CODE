@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using UnityEngine;
+using RoboticsProject.Managers;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
@@ -44,13 +45,26 @@ public class PlayerMovement : MonoBehaviour
         {
             mainCameraTransform = Camera.main.transform;
         }
+
+        // Tự động gán reference cho InputManager (Lỗi 4)
+        if (inputManager == null)
+        {
+            inputManager = InputManager.Instance;
+            if (inputManager == null)
+            {
+                inputManager = FindFirstObjectByType<InputManager>();
+            }
+        }
     }
 
     private void Update()
     {
-        // 1. Tính toán logic
-        CalculateGravityAndJump();
-        Vector3 finalMovement = CalculateMovement();
+        // Kiểm tra xem túi đồ có đang mở không (Lỗi 3)
+        bool isInventoryOpen = InventoryManager.Instance != null && InventoryManager.Instance.IsOpen;
+
+        // 1. Tính toán logic (truyền trạng thái túi đồ vào để giới hạn hành động)
+        CalculateGravityAndJump(isInventoryOpen);
+        Vector3 finalMovement = CalculateMovement(isInventoryOpen);
 
         // 2. Thực thi di chuyển (Chỉ gọi 1 lần duy nhất)
         controller.Move(finalMovement * Time.deltaTime);
@@ -73,10 +87,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CalculateGravityAndJump()
+    private void CalculateGravityAndJump(bool disableJump)
     {
-        // Xử lý Input Nhảy
-        if (inputManager.JumpTriggered && isGrounded)
+        // Xử lý Input Nhảy (chỉ cho phép nhảy khi túi đồ không mở)
+        if (!disableJump && inputManager != null && inputManager.JumpTriggered && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             OnJumped?.Invoke(); // Phát sự kiện nhảy
@@ -93,8 +107,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private Vector3 CalculateMovement()
+    private Vector3 CalculateMovement(bool disableMovement)
     {
+        // Nếu túi đồ đang mở, tắt di chuyển ngang hoàn toàn (Lỗi 3)
+        if (disableMovement || inputManager == null)
+        {
+            return Vector3.up * velocity.y;
+        }
+
         Vector2 moveInput = inputManager.MoveInput;
         Vector3 direction = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
         float currentSpeed = inputManager.IsSprinting ? sprintSpeed : moveSpeed;

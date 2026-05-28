@@ -1,20 +1,26 @@
 using UnityEngine;
-using TMPro;
 using RoboticsProject.Interfaces;
+using RoboticsProject.Managers;
+using RoboticsProject.UI;
 
 namespace RoboticsProject.Controllers.Player
 {
+    /// <summary>
+    /// Chịu trách nhiệm quét vật lý phát hiện vật thể tương tác gần nhất và kích hoạt hành động tương tác.
+    /// Tuân thủ nguyên lý Single Responsibility Principle (SRP) - chỉ tập trung vào logic tương tác, bàn giao phần hiển thị cho InteractionUI.
+    /// </summary>
     public class PlayerSelector : MonoBehaviour
     {
         [Header("Proximity Settings")]
         [Tooltip("Bán kính vùng quét xung quanh người chơi")]
         [SerializeField] private float interactRadius = 2f;
+        
         [Tooltip("Lọc layer để chỉ quét những vật thể Selectable")]
         [SerializeField] private LayerMask interactLayerMask;
 
         [Header("UI Setup")]
-        [SerializeField] private TextMeshProUGUI promptTextUI;
-        [SerializeField] private GameObject promptPanel;
+        [Tooltip("Giao diện tương tác cao cấp phong cách Genshin")]
+        [SerializeField] private InteractionUI interactionUI;
 
         [Header("References")]
         [SerializeField] private InputManager inputManager;
@@ -22,24 +28,53 @@ namespace RoboticsProject.Controllers.Player
         private IInteractable currentInteractable;
 
         // TỐI ƯU 1: Tạo sẵn một mảng cố định để chứa kết quả quét vật lý (tránh tạo mảng mới mỗi frame)
-        // Con số 10 là số lượng vật thể tối đa có thể nằm trong bán kính cùng lúc. 
-        // Bạn có thể tăng lên nếu game có mật độ vật thể dày đặc hơn.
         private Collider[] hitColliders = new Collider[10];
 
         private void Start()
         {
+            // Tự động tìm kiếm InteractionUI trong Scene nếu chưa được gán tay
+            if (interactionUI == null)
+            {
+                interactionUI = FindFirstObjectByType<InteractionUI>();
+                if (interactionUI == null)
+                {
+                    Debug.LogWarning($"[PlayerSelector] Không tìm thấy Component InteractionUI nào trong Scene trên GameObject: {gameObject.name}");
+                }
+            }
+
             HideUI();
+
+            // Tự động gán reference cho InputManager
+            if (inputManager == null)
+            {
+                inputManager = InputManager.Instance;
+                if (inputManager == null)
+                {
+                    inputManager = FindFirstObjectByType<InputManager>();
+                }
+            }
         }
 
         private void Update()
         {
+            // Nếu túi đồ đang mở, ẩn UI tương tác và không thực hiện quét vật lý
+            if (InventoryManager.Instance != null && InventoryManager.Instance.IsOpen)
+            {
+                if (currentInteractable != null)
+                {
+                    currentInteractable = null;
+                    HideUI();
+                }
+                return;
+            }
+
             FindClosestInteractable();
             HandleInteraction();
         }
 
         private void FindClosestInteractable()
         {
-            // TỐI ƯU 1: Dùng NonAlloc. Hàm này trả về số lượng vật thể chạm phải và nhét kết quả vào mảng hitColliders có sẵn.
+            // TỐI ƯU 1: Dùng NonAlloc để tránh phân bổ bộ nhớ rác (GC.Alloc) trong vòng lặp Update
             int hitCount = Physics.OverlapSphereNonAlloc(transform.position, interactRadius, hitColliders, interactLayerMask);
 
             IInteractable closestInteractable = null;
@@ -62,7 +97,7 @@ namespace RoboticsProject.Controllers.Player
                 }
             }
 
-            // TỐI ƯU 2: Chỉ cập nhật UI nếu mục tiêu GẦN NHẤT thực sự THAY ĐỔI
+            // TỐI ƯU 2: Chỉ cập nhật trạng thái UI khi mục tiêu thực sự thay đổi giữa các frame
             if (closestInteractable != currentInteractable)
             {
                 currentInteractable = closestInteractable;
@@ -80,37 +115,35 @@ namespace RoboticsProject.Controllers.Player
 
         private void HandleInteraction()
         {
-            // Kiểm tra nút bấm từ InputManager
+            // Kiểm tra nút bấm tương tác từ InputManager
             if (inputManager != null && inputManager.InteractTriggered && currentInteractable != null)
             {
                 currentInteractable.OnInteract();
 
-                // Ép UI cập nhật ngay lập tức sau khi tương tác (VD: Đổi ngay chữ "Gieo hạt" thành "Tưới nước")
+                // Cập nhật UI ngay lập tức sau khi tương tác (ví dụ: đổi text từ "Mở cửa" sang "Đóng cửa")
                 ShowUI(currentInteractable.GetInteractPrompt());
             }
         }
 
         private void ShowUI(string promptMessage)
         {
-            if (promptPanel != null && !promptPanel.activeSelf)
+            if (interactionUI == null) return;
+
+            // Lấy phím bấm tương tác động từ InputManager
+            string interactKey = "E";
+            if (inputManager != null)
             {
-                promptPanel.SetActive(true);
+                interactKey = inputManager.GetInteractBindingName();
             }
-            if (promptTextUI != null)
-            {
-                promptTextUI.text = promptMessage;
-            }
+
+            interactionUI.Show(promptMessage, interactKey);
         }
 
         private void HideUI()
         {
-            if (promptPanel != null && promptPanel.activeSelf)
+            if (interactionUI != null)
             {
-                promptPanel.SetActive(false);
-            }
-            if (promptTextUI != null)
-            {
-                promptTextUI.text = "";
+                interactionUI.Hide();
             }
         }
 
