@@ -25,59 +25,115 @@ public class InputManager : MonoBehaviour
     public bool IsHoldingFire { get; private set; }  // True khi giữ chuột phải
     public bool InventoryTriggered { get; private set; }
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
+        private bool _isGameplayInputBlocked = false;
+
+        /// <summary>
+        /// Bật/tắt trạng thái chặn toàn bộ input gameplay (di chuyển, camera, bắn...) khi có menu UI đang mở.
+        /// </summary>
+        public bool IsGameplayInputBlocked
         {
-            Destroy(gameObject);
-            return;
+            get => _isGameplayInputBlocked;
+            set
+            {
+                if (_isGameplayInputBlocked != value)
+                {
+                    _isGameplayInputBlocked = value;
+                    UpdateActionStates();
+                }
+            }
         }
-        Instance = this;
-    }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private void OnEnable()
-    {
-        if(MoveAction != null) MoveAction.action.Enable();
-        if(JumpAction != null) JumpAction.action.Enable();
-        if(LookAction != null) LookAction.action.Enable();
-        if(LockOnAction != null) LockOnAction.action.Enable();
-        if(SprintAction != null) SprintAction.action.Enable();
-        if(InteractAction != null) InteractAction.action.Enable();
-        if(FireAction != null) FireAction.action.Enable();
-        if(InventoryAction != null) InventoryAction.action.Enable();
-    }
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
 
-    private void OnDisable()
-    {
-        if(MoveAction != null) { 
-            MoveAction.action.Disable(); 
+        // Start is called once before the first execution of Update after the MonoBehaviour is created
+        private void OnEnable()
+        {
+            UpdateActionStates();
+            // Luôn giữ InventoryAction hoạt động để có thể mở/đóng túi đồ bằng phím nóng
+            if (InventoryAction != null && InventoryAction.action != null)
+            {
+                InventoryAction.action.Enable();
+            }
         }
-        if(JumpAction != null) { 
-            JumpAction.action.Disable(); 
+
+        private void OnDisable()
+        {
+            DisableAllActions();
         }
-        if(LookAction != null) { 
-            LookAction.action.Disable();
+
+        /// <summary>
+        /// Đồng bộ trạng thái hoạt động của các Action tùy theo trạng thái chặn input
+        /// </summary>
+        private void UpdateActionStates()
+        {
+            if (_isGameplayInputBlocked)
+            {
+                // Tắt các input phục vụ gameplay
+                if (MoveAction != null && MoveAction.action != null) MoveAction.action.Disable();
+                if (JumpAction != null && JumpAction.action != null) JumpAction.action.Disable();
+                if (LookAction != null && LookAction.action != null) LookAction.action.Disable();
+                if (LockOnAction != null && LockOnAction.action != null) LockOnAction.action.Disable();
+                if (SprintAction != null && SprintAction.action != null) SprintAction.action.Disable();
+                if (InteractAction != null && InteractAction.action != null) InteractAction.action.Disable();
+                if (FireAction != null && FireAction.action != null) FireAction.action.Disable();
+            }
+            else
+            {
+                // Kích hoạt lại các input gameplay
+                if (MoveAction != null && MoveAction.action != null) MoveAction.action.Enable();
+                if (JumpAction != null && JumpAction.action != null) JumpAction.action.Enable();
+                if (LookAction != null && LookAction.action != null) LookAction.action.Enable();
+                if (LockOnAction != null && LockOnAction.action != null) LockOnAction.action.Enable();
+                if (SprintAction != null && SprintAction.action != null) SprintAction.action.Enable();
+                if (InteractAction != null && InteractAction.action != null) InteractAction.action.Enable();
+                if (FireAction != null && FireAction.action != null) FireAction.action.Enable();
+            }
         }
-        if(LockOnAction != null ){ 
-            LockOnAction.action.Disable();
+
+        /// <summary>
+        /// Vô hiệu hóa toàn bộ Action khi Script bị tắt
+        /// </summary>
+        private void DisableAllActions()
+        {
+            if (MoveAction != null && MoveAction.action != null) MoveAction.action.Disable();
+            if (JumpAction != null && JumpAction.action != null) JumpAction.action.Disable();
+            if (LookAction != null && LookAction.action != null) LookAction.action.Disable();
+            if (LockOnAction != null && LockOnAction.action != null) LockOnAction.action.Disable();
+            if (SprintAction != null && SprintAction.action != null) SprintAction.action.Disable();
+            if (InteractAction != null && InteractAction.action != null) InteractAction.action.Disable();
+            if (FireAction != null && FireAction.action != null) FireAction.action.Disable();
+            if (InventoryAction != null && InventoryAction.action != null) InventoryAction.action.Disable();
         }
-        if (SprintAction != null) {
-            SprintAction.action.Disable();
-        }
-        if (InteractAction != null) {
-            InteractAction.action.Disable();
-        }
-        if (FireAction != null) {
-            FireAction.action.Disable();
-        if (InventoryAction != null) {
-            InventoryAction.action.Disable();
-        }
-    }
 
     // Update is called once per frame
     void Update()
     {
+        // Nếu đang chặn input gameplay, thiết lập các giá trị input về mặc định (ngoại trừ nút Inventory/ESC)
+        if (IsGameplayInputBlocked)
+        {
+            MoveInput = Vector2.zero;
+            JumpTriggered = false;
+            LookInput = Vector2.zero;
+            IsLockOn = false;
+            IsSprinting = false;
+            InteractTriggered = false;
+            FireTriggered = false;
+            IsHoldingFire = false;
+            if (InventoryAction != null)
+            {
+                InventoryTriggered = InventoryAction.action.WasPressedThisFrame();
+            }
+            return;
+        }
+
         if (MoveAction != null) {
             MoveInput = MoveAction.action.ReadValue<Vector2>();
         }

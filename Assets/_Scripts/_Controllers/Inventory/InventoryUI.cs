@@ -126,10 +126,11 @@ namespace RoboticsProject.Controllers.Inventory
             {
                 RefreshUI();
                 
-                // Hiển thị chuột khi mở túi đồ
+                // Hiển thị chuột và chặn input di chuyển khi mở túi đồ
                 if (InputManager.Instance != null)
                 {
                     InputManager.Instance.SetCursorState(false);
+                    InputManager.Instance.IsGameplayInputBlocked = true;
                 }
             }
             else
@@ -137,10 +138,11 @@ namespace RoboticsProject.Controllers.Inventory
                 ClearDescription();
                 currentlySelectedSlotIndex = -1;
 
-                // Khóa chuột lại khi đóng túi đồ để chơi game tiếp
+                // Khóa chuột lại và khôi phục di chuyển khi đóng túi đồ
                 if (InputManager.Instance != null)
                 {
                     InputManager.Instance.SetCursorState(true);
+                    InputManager.Instance.IsGameplayInputBlocked = false;
                 }
             }
         }
