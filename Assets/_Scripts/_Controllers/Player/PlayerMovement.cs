@@ -59,12 +59,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        // Kiểm tra xem túi đồ có đang mở không (Lỗi 3)
-        bool isInventoryOpen = InventoryManager.Instance != null && InventoryManager.Instance.IsOpen;
+        // Chặn di chuyển khi bất kỳ menu/UI nào đang mở
+        bool isInputBlocked = inputManager != null && inputManager.IsGameplayInputBlocked;
 
-        // 1. Tính toán logic (truyền trạng thái túi đồ vào để giới hạn hành động)
-        CalculateGravityAndJump(isInventoryOpen);
-        Vector3 finalMovement = CalculateMovement(isInventoryOpen);
+        // 1. Tính toán logic (truyền trạng thái chặn vào để giới hạn hành động)
+        CalculateGravityAndJump(isInputBlocked);
+        Vector3 finalMovement = CalculateMovement(isInputBlocked);
 
         // 2. Thực thi di chuyển (Chỉ gọi 1 lần duy nhất)
         controller.Move(finalMovement * Time.deltaTime);

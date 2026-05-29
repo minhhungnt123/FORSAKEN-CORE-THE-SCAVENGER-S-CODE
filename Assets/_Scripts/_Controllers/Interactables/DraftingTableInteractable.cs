@@ -1,5 +1,6 @@
 using UnityEngine;
 using RoboticsProject.Interfaces;
+using RoboticsProject.UI;
 
 namespace RoboticsProject.Controllers.Interactables
 {
@@ -17,8 +18,14 @@ namespace RoboticsProject.Controllers.Interactables
         public void OnInteract()
         {
             Debug.Log("[DraftingTable] Mở UI vẽ Blueprint...");
-            // TODO: Mở UI cho phép người chơi chọn vẽ Đầu, Thân, Tay, Chân...
-            // Kết quả của bước này là tạo ra các vật phẩm dạng Blueprint lưu vào Inventory.
+            if (DraftingTableUI.Instance != null)
+            {
+                DraftingTableUI.Instance.OpenUI();
+            }
+            else
+            {
+                Debug.LogWarning("[DraftingTableInteractable] Không tìm thấy DraftingTableUI.Instance trong Scene!");
+            }
         }
     }
 }

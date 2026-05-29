@@ -7,13 +7,13 @@ public class CameraController : MonoBehaviour
     [Header("Cursor Settings")]
     [SerializeField] private bool lockCursorOnStart = true;
 
-    private bool isCursorLocked;
+    // Đọc trực tiếp từ trạng thái hệ thống để tránh lỗi bất đồng bộ giữa các UI khác nhau
+    private bool isCursorLocked => Cursor.lockState == CursorLockMode.Locked;
 
     private void Start()
     {
         if (lockCursorOnStart)
             SetCursorState(true);
-        }
 
         if (InventoryManager.Instance != null)
         {
@@ -40,12 +40,13 @@ public class CameraController : MonoBehaviour
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ToggleCursorState();
+        }
 
         // Bấm chuột trái để khóa lại (chuẩn thao tác game bắn súng)
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !isCursorLocked)
         {
-            // Chỉ khóa lại khi túi đồ không mở
-            if (InventoryManager.Instance == null || !InventoryManager.Instance.IsOpen)
+            // Chỉ khóa lại khi không có giao diện UI nào đang mở
+            if (InputManager.Instance == null || !InputManager.Instance.IsGameplayInputBlocked)
             {
                 SetCursorState(true);
             }
@@ -54,7 +55,6 @@ public class CameraController : MonoBehaviour
 
     public void SetCursorState(bool isLocked)
     {
-        isCursorLocked = isLocked;
         Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
         Cursor.visible = !isLocked;
     }

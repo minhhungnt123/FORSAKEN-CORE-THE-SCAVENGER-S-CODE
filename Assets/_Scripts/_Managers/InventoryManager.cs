@@ -16,6 +16,10 @@ namespace RoboticsProject.Managers
         public List<ItemSlot> slots = new List<ItemSlot>();
         public int maxSlots = 20;
 
+        [Header("Starting Items (Test Debug)")]
+        [Tooltip("Danh sách vật phẩm được nạp sẵn khi khởi tạo túi đồ")]
+        [SerializeField] private List<ItemSlot> startingItems = new List<ItemSlot>();
+
         // Event báo hiệu cho UI biết khi túi đồ thay đổi dữ liệu bên trong
         public event Action OnInventoryChanged;
 
@@ -27,6 +31,8 @@ namespace RoboticsProject.Managers
 
         // Trạng thái mở/đóng hiện tại của túi đồ
         public bool IsOpen { get; private set; } = false;
+
+        private bool isInitialized = false;
 
         private void Awake()
         {
@@ -49,25 +55,38 @@ namespace RoboticsProject.Managers
 
         private void InitializeInventory()
         {
-            // Khởi tạo các ô trống cho đủ số lượng maxSlots
+            if (isInitialized) return;
+            isInitialized = true;
+
+            // 1. Khởi tạo các ô trống cho đủ số lượng maxSlots
+            slots.Clear();
             while (slots.Count < maxSlots)
             {
                 slots.Add(new ItemSlot(null, 0));
             }
 
-            // Cắt ngắn nếu vượt quá maxSlots
-            if (slots.Count > maxSlots)
+            // 2. Nạp các vật phẩm ban đầu vào túi đồ
+            if (startingItems != null)
             {
-                slots.RemoveRange(maxSlots, slots.Count - maxSlots);
+                foreach (var startingSlot in startingItems)
+                {
+                    if (startingSlot != null && startingSlot.item != null && startingSlot.quantity > 0)
+                    {
+                        AddItem(startingSlot.item, startingSlot.quantity);
+                    }
+                }
             }
         }
 
         private void Update()
         {
-            // Sử dụng InputManager để kiểm tra phím bấm mở hòm đồ
+            // Chỉ cho phép toggle túi đồ nếu túi đồ đang mở (để đóng) hoặc không bị chặn bởi UI khác
             if (InputManager.Instance != null && InputManager.Instance.InventoryTriggered)
             {
-                ToggleInventory();
+                if (IsOpen || !InputManager.Instance.IsGameplayInputBlocked)
+                {
+                    ToggleInventory();
+                }
             }
         }
 
