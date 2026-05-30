@@ -1,5 +1,6 @@
 using UnityEngine;
 using RoboticsProject.Interfaces;
+using RoboticsProject.UI;
 
 namespace RoboticsProject.Controllers.Interactables
 {
@@ -17,8 +18,14 @@ namespace RoboticsProject.Controllers.Interactables
         public void OnInteract()
         {
             Debug.Log("[ModelTable] Mở UI chế tạo mô hình...");
-            // TODO: Mở UI yêu cầu người chơi đưa Blueprint vào cùng nguyên liệu.
-            // Kết quả của bước này là sinh ra các GameObject (Đầu, Thân, Tay) thực tế.
+            if (ModelTableUI.Instance != null)
+            {
+                ModelTableUI.Instance.OpenUI();
+            }
+            else
+            {
+                Debug.LogWarning("[ModelTableInteractable] Không tìm thấy ModelTableUI.Instance trong Scene!");
+            }
         }
     }
 }

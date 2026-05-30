@@ -80,11 +80,44 @@ namespace RoboticsProject.UI
                 closeButton.onClick.AddListener(CloseUI);
             }
 
+            // Cấu hình bố cục tự động cho danh sách nguyên liệu yêu cầu
+            ConfigureRequirementsLayout();
+
             // Lắng nghe sự kiện vẽ thành công để làm mới giao diện
             if (DraftingManager.Instance != null)
             {
                 DraftingManager.Instance.OnDraftingSuccess += RefreshDetailsPanel;
             }
+        }
+
+        /// <summary>
+        /// Tự động cấu hình VerticalLayoutGroup và ContentSizeFitter trên container nguyên liệu.
+        /// Đảm bảo các dòng nguyên liệu giãn cách đẹp mắt, không đè chồng chéo hoặc bị co dẹt.
+        /// </summary>
+        private void ConfigureRequirementsLayout()
+        {
+            if (requirementsContainer == null) return;
+
+            VerticalLayoutGroup layoutGroup = requirementsContainer.GetComponent<VerticalLayoutGroup>();
+            if (layoutGroup == null)
+            {
+                layoutGroup = requirementsContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+            }
+
+            layoutGroup.spacing = 10f; // Khoảng cách giữa các dòng nguyên liệu
+            layoutGroup.childAlignment = TextAnchor.UpperLeft;
+            layoutGroup.childControlHeight = true;
+            layoutGroup.childControlWidth = true;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.childForceExpandWidth = false;
+
+            ContentSizeFitter fitter = requirementsContainer.GetComponent<ContentSizeFitter>();
+            if (fitter == null)
+            {
+                fitter = requirementsContainer.gameObject.AddComponent<ContentSizeFitter>();
+            }
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
         }
 
         private void OnDestroy()
@@ -239,6 +272,15 @@ namespace RoboticsProject.UI
                     GameObject reqObj = Instantiate(requirementItemPrefab, requirementsContainer);
                     activeRequirementItems.Add(reqObj);
 
+                    // Cố định chiều cao dòng để tránh bị co dẹt và lệch chữ
+                    LayoutElement layoutElement = reqObj.GetComponent<LayoutElement>();
+                    if (layoutElement == null)
+                    {
+                        layoutElement = reqObj.AddComponent<LayoutElement>();
+                    }
+                    layoutElement.preferredHeight = 45f;
+                    layoutElement.minHeight = 40f;
+
                     // Thiết lập thông tin vật phẩm yêu cầu
                     // Thử tìm các component Image và Text trong prefab nguyên liệu
                     Image iconImage = reqObj.transform.Find("Icon")?.GetComponent<Image>();
@@ -249,6 +291,7 @@ namespace RoboticsProject.UI
                     if (iconImage != null)
                     {
                         iconImage.sprite = req.item.itemIcon;
+                        iconImage.preserveAspect = true;
                         iconImage.enabled = req.item.itemIcon != null;
                     }
 

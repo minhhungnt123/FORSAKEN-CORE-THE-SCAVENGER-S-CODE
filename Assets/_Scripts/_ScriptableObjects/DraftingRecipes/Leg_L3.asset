@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1cfd76ce1af25940837276bc1d2ec12, type: 3}
+  m_Name: Leg_L3
+  m_EditorClassIdentifier: Assembly-CSharp::RoboticsProject.Modules.Inventory.DraftingRecipeSO
+  recipeName: Leg L3
+  resultBlueprint: {fileID: 11400000, guid: 5beffdfd65201184aaac43375a7f8ba7, type: 2}
+  requirements:
+  - item: {fileID: 11400000, guid: fef35d067daa12a419391a44de771cf1, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: 816f28f86757a89468f4cbe3bc2ba568, type: 2}
+    quantity: 3
+  recipeDescription: "\u0110\xF4i ch\xE2n th\u1EBF h\u1EC7 3"

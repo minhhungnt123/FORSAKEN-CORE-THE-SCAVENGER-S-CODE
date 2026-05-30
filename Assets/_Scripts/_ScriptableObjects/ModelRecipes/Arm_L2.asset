@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7472035c4162f543aa7fa59cefc6d5d, type: 3}
+  m_Name: Arm_L2
+  m_EditorClassIdentifier: Assembly-CSharp::RoboticsProject.Modules.Inventory.ModelRecipeSO
+  recipeName: Arm L2
+  resultModel: {fileID: 0}
+  requiredBlueprint: {fileID: 11400000, guid: b6fce529bf9b7ab41845f73dadf44b6a, type: 2}
+  ingredients:
+  - item: {fileID: 11400000, guid: adca1cede572e4a4c83bc0ab47a40d12, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: a17aa971a9d1e774faf65a7415ff8dca, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: 412226ed609920445a9d2a973cde3b79, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: ec2608f94a12ae34491d581abdeb5ab9, type: 2}
+    quantity: 3
+  - item: {fileID: 11400000, guid: 2695315cf02e8dd41b70c5e1802cebbe, type: 2}
+    quantity: 2
+  - item: {fileID: 11400000, guid: cf3ccde55718efa4b8200443f11a1817, type: 2}
+    quantity: 3
+  recipeDescription: "M\xF4 t\u1EA3 chi ti\u1EBFt linh ki\u1EC7n..."
