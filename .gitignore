@@ -52,4 +52,5 @@ ExportedObj/
 
 # Ignore .agents folder
 .agents/
-*.agents.meta
+*.agents.meta
+_Report/

@@ -16,6 +16,6 @@ MonoBehaviour:
   itemName: Scrap_Notes
   description: Scrap_Notes
   itemType: 0
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: 162ce7ed2f5421a499776a08612a3d23, type: 3}
   isStackable: 1
   maxStackSize: 99
